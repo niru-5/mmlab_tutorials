@@ -2,10 +2,11 @@ import mmengine
 import mmengine.runner.runner as runner
 from mmengine.utils import digit_version
 
-from .evaluation import Evaluator
+from .evaluation import EvaluatorCustom
 from .version import __version__, version_info
 
-runner.Evaluator = Evaluator
+# TODO: this is messing up with the current training
+# runner.Evaluator = EvaluatorCustom
 
 mmengine_minimum_version = '0.3.0'
 mmengine_maximum_version = '1.0.0'

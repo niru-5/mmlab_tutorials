@@ -4,13 +4,40 @@ from mmengine.model import BaseModel
 import torch.nn as nn
 import json
 from torch.utils.data import Dataset, DataLoader
+from mmengine.dataset import BaseDataset
 from PIL import Image
 import os   
 from torch.optim import SGD
 from mmengine.runner import Runner
 from mmengine.evaluator import BaseMetric
+import sys
+from mmengine.registry import DefaultScope
+sys.path.append('/hdd/side_projects/mmlab_tutorials/')
+# from mmengine_custom.datasets.datasets import Fruits360Dataset
 
 
+
+# @DATASETS.register_module()
+class Fruits360Dataset(BaseDataset):
+    def __init__(self, meta_file, ann_file, pipeline):
+        # load the meta file here. 
+        with open(meta_file, 'r') as f:
+            self.meta_info = json.load(f)
+        meta_info = {"classes": list(self.meta_info.keys())}
+        super().__init__(ann_file=ann_file, metainfo=meta_info, pipeline=pipeline)
+        self.classes = list(self.meta_info.keys())
+    
+    def load_data_list(self):
+        # load the ann_file here. 
+        with open(self.ann_file, 'r') as f:
+            self.annotations = json.load(f)
+        self.ann_img_paths = list(self.annotations.keys())
+        self.ann_img_idx = list(self.annotations.values())
+        data_list = []
+        for idx, raw_data_info in enumerate(self.ann_img_paths):
+            data_info = {"img_path": raw_data_info, "img_label": self.ann_img_idx[idx]}
+            data_list.append(data_info)
+        return data_list
 
 class Accuracy(BaseMetric):
     def process(self, data_batch, data_samples):
@@ -96,49 +123,7 @@ class SimpleConvModel(BaseModel):
         elif mode == 'predict':
             return x, labels
 
-# dataset builder
 
-# build a custom dataset of fruits 360 using torchvision
-
-class Fruits360Dataset(Dataset):
-    def __init__(self, meta_file, ann_file, transform=None):
-        """
-        Args:
-            meta_file (str): Path to JSON file containing class information
-            ann_file (str): Path to JSON file containing image paths and labels
-            transform (callable, optional): Optional transform to be applied on an image
-        """
-        self.transform = transform
-        
-        # Load class information
-        with open(meta_file, 'r') as f:
-            self.classes = json.load(f)
-            
-        # Load annotations
-        with open(ann_file, 'r') as f:
-            self.annotations = json.load(f)
-            self.ann_img_paths = list(self.annotations.keys())
-            self.ann_img_idx = list(self.annotations.values())
-            
-
-    def __len__(self):
-        return len(self.annotations)
-
-    def __getitem__(self, idx):
-        # Get annotation for the index
-        img_path = self.ann_img_paths[idx]
-        
-        # Load image
-        image = Image.open(img_path).convert('RGB')
-        
-        # Get class label
-        label = self.ann_img_idx[idx]
-        
-        # Apply transforms if any
-        if self.transform:
-            image = self.transform(image)
-            
-        return image, label
 
 # Default transforms for training
 def get_default_transforms():
@@ -152,15 +137,31 @@ def get_default_transforms():
     ])
 
 
+
+pipeline = [
+            dict(type='LoadImageFromFile'),
+            dict(type='Resize', scale=(128, 128), keep_ratio=False),
+            dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            dict(type='ToTensor', keys=['img']),
+            dict(type='PackClsInputs'),
+        ]
+
 meta_file_path = "/hdd/side_projects/mmlab_tutorials/data/class_names_to_indices.json"
 train_ann_file_path = "/hdd/side_projects/mmlab_tutorials/data/train_list.json"
 test_ann_file_path = "/hdd/side_projects/mmlab_tutorials/data/test_list.json"
 val_ann_file_path = "/hdd/side_projects/mmlab_tutorials/data/val_list.json"
 
 
-train_dataset = Fruits360Dataset(meta_file_path, train_ann_file_path, get_default_transforms())
-test_dataset = Fruits360Dataset(meta_file_path, test_ann_file_path, get_default_transforms())
-val_dataset = Fruits360Dataset(meta_file_path, val_ann_file_path, get_default_transforms())
+# Set default scope before creating datasets
+DefaultScope.get_instance('mmengine_custom', scope_name='mmengine_custom')
+
+# train_dataset = Fruits360Dataset(meta_file_path, train_ann_file_path, get_default_transforms())
+# test_dataset = Fruits360Dataset(meta_file_path, test_ann_file_path, get_default_transforms())
+# val_dataset = Fruits360Dataset(meta_file_path, val_ann_file_path, get_default_transforms())
+
+train_dataset = Fruits360Dataset(meta_file_path, train_ann_file_path, pipeline)
+test_dataset = Fruits360Dataset(meta_file_path, test_ann_file_path, pipeline)
+val_dataset = Fruits360Dataset(meta_file_path, val_ann_file_path, pipeline)
 
 batch_size = 64
 num_classes = len(train_dataset.classes)
@@ -183,13 +184,14 @@ runner = Runner(
     # AMP, gradtient accumulation, etc
     optim_wrapper=dict(optimizer=dict(type=SGD, lr=0.01, momentum=0.9)),
     # trainging coinfs for specifying training epoches, verification intervals, etc
-    train_cfg=dict(by_epoch=True, max_epochs=24, val_interval=3),
+    train_cfg=dict(by_epoch=True, max_epochs=24, val_interval=1),
     # validation dataloaer also needs to meet the PyTorch data loader protocol
     val_dataloader=val_dataloader,
     # validation configs for specifying additional parameters required for validation
     val_cfg=dict(),
     # validation evaluator. The default one is used here
     val_evaluator=dict(type=Accuracy),
+    # default_scope='mmengine_custom'
 )
 
 runner.train()

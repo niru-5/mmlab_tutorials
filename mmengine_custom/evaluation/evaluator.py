@@ -12,14 +12,14 @@ Warning:
     ``metric.evaluate``
 """
 
-from mmengine.evaluator import Evaluator as MMEngineEvaluator
+from mmengine.evaluator import Evaluator #as MMEngineEvaluator
 from mmengine.structures import BaseDataElement
 
 from mmengine_custom.registry import EVALUATOR
 
 
 @EVALUATOR.register_module()
-class Evaluator(MMEngineEvaluator):
+class EvaluatorCustom(Evaluator):
 
     def process(self, data_samples, data_batch=None):
         _data_samples = []

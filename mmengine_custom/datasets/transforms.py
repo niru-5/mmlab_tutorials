@@ -19,12 +19,38 @@ except ImportError as e:
         'must implement the `__call__` method by yourself.')
     BaseTransform = object
 
-from mmengine_custom.registry import TRANSFORMS
-
+from mmengine.registry import TRANSFORMS
+import numpy as np
 
 @TRANSFORMS.register_module()
-class CustomTransform(BaseTransform):
-    ...
+class PackClsInputs(BaseTransform):
 
-    def transform(self, results):
-        return super().transform(results)
+    def __init__(self,
+                 meta_keys=('sample_idx', 'img_path', 'ori_shape', 'img_shape',
+                            'scale_factor', 'flip', 'flip_direction')):
+        self.meta_keys = meta_keys
+
+    def transform(self, results: dict) -> dict:
+        """Method to pack the input data."""
+        packed_results = dict()
+        if 'img' in results:
+            img = results['img']
+            # img is a torch tensor
+            # img shape is W*H*C
+            # change it to C, W, H
+            img = img.permute(2, 0, 1)
+            packed_results['imgs'] = img
+        else:
+            raise ValueError("img is not in the results")
+        
+        if 'img_label' in results:
+            packed_results['labels'] = results['img_label']
+        else:
+            raise ValueError("img_label is not in the results")
+
+        return packed_results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(meta_keys={self.meta_keys})'
+        return repr_str

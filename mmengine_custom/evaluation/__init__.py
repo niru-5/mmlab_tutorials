@@ -1,4 +1,4 @@
-from .evaluator import Evaluator
+from .evaluator import EvaluatorCustom
 from .metrics import CustomMetric
 
-__all__ = ['CustomMetric', 'Evaluator']
+__all__ = ['CustomMetric', 'EvaluatorCustom']

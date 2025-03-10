@@ -39,7 +39,7 @@ LOOPS = Registry('loop', parent=MMENGINE_LOOPS)
 HOOKS = Registry(
     'hook',
     parent=MMENGINE_HOOKS,
-    locations=['mmengine_custom.engine.hooks'])
+    locations=['mmengine_custom.engine'])
 
 # manage data-related modules
 DATASETS = Registry(
@@ -50,7 +50,7 @@ DATASETS = Registry(
 TRANSFORMS = Registry(
     'transform',
     parent=MMENGINE_TRANSFORMS,
-    locations=['mmengine_custom.datasets.transform'])
+    locations=['mmengine_custom.datasets'])
 
 # manage all kinds of modules inheriting `nn.Module`
 MODELS = Registry(
@@ -71,19 +71,20 @@ WEIGHT_INITIALIZERS = Registry(
 OPTIMIZERS = Registry(
     'optimizer',
     parent=MMENGINE_OPTIMIZERS,
-    locations=['mmengine_custom.engine.optimizer'])
+    locations=['mmengine_custom.engine'])
 
 # manage optimizer wrapper
 OPTIM_WRAPPERS = Registry(
     'optim_wrapper',
     parent=MMENGINE_OPTIM_WRAPPERS,
-    locations=['mmengine_custom.engine.optim_wrapper'])
+    locations=['mmengine_custom.engine'])
 
 # manage constructors that customize the optimization hyperparameters.
 OPTIM_WRAPPER_CONSTRUCTORS = Registry(
     'optimizer constructor',
     parent=MMENGINE_OPTIM_WRAPPER_CONSTRUCTORS,
-    locations=['mmengine_custom.engine.optim_wrapper_constructor'])
+    locations=['mmengine_custom.engine']
+)
 # manage all kinds of parameter schedulers like `MultiStepLR`
 PARAM_SCHEDULERS = Registry(
     'parameter scheduler',

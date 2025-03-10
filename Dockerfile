@@ -84,6 +84,3 @@ RUN python3 -m venv mm_env && \
     git clone --branch v1.0.0 https://github.com/open-mmlab/mmpose.git && \
     cd mmpose && \
     pip3 install -e . && cd ..
-
-
-# RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
