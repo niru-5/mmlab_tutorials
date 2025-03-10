@@ -24,9 +24,15 @@ the ``CustomDataset`` to the real name of the target dataset, for example,
 
 from mmengine.dataset import BaseDataset
 
-from mmengine_template.registry import DATASETS
+from mmengine_custom.registry import DATASETS
 
 
 @DATASETS.register_module()
 class CustomDataset(BaseDataset):
     ...
+    
+    
+@DATASETS.register_module(name="fruits_360_torchvision")
+class fruits_360_torchvision(BaseDataset):
+    # inherit from torchvision datasets 
+    # get the meta info, 

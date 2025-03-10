@@ -1,3 +1,6 @@
 mm_env/*
 mm_repos/*
 .vscode/*
+data/*
+*.ipynb_checkpoints
+*.pyc
