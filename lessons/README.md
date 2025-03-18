@@ -7,6 +7,7 @@ This is the base library of OpenMMLab.
 
 ### 1.1. Overview of mmengine
   - Installation
+    - Setup: assignment
   - fundamental concepts 
     - runner
     - hooks
@@ -14,16 +15,27 @@ This is the base library of OpenMMLab.
     - configs
     - datasets: assignment
     - models: assignment
+    - Hooks: assignment
 
 ### 1.2 mmengine specifics
   - visualization
-  - logging
-  - hooks: assignment
+  - logging: assignment
   - augmentation: assignment
+  - Playing with learning rate scheduler: assignment
+  - Putting it all together in a config file: assignment
 
 ## Lesson 2: mmdetection
 Still need to plan this. 
 
+## Lesson 3: mmsegmentation
+
+## Lesson 4: mmdeploy
+
+## Lesson 5: mmpose
+
+## Lesson 6: mmrotate
+
+## Lesson 7: mmtracking
 
 # Learning procedure. 
 

@@ -21,7 +21,6 @@ This repository contains a series of tutorials on using various OpenMMLab reposi
    - MMPose
    - MMRotate
    - MMTracking
-   - MMYolo
    - MMDeploy (This closes the loop by deploying the models to the edge/cloud)
 
 ## Getting Started
