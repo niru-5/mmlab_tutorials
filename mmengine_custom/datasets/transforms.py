@@ -18,12 +18,12 @@ except ImportError as e:
         'Using `object` as the base class of the custom transform. and you '
         'must implement the `__call__` method by yourself.')
     BaseTransform = object
-
-from mmengine.registry import TRANSFORMS
+import warnings
+from mmengine_custom.registry import TRANSFORMS
 import numpy as np
 
 @TRANSFORMS.register_module()
-class PackClsInputs(BaseTransform):
+class CustomPackClsInputs(BaseTransform):
 
     def __init__(self,
                  meta_keys=('sample_idx', 'img_path', 'ori_shape', 'img_shape',
@@ -39,7 +39,8 @@ class PackClsInputs(BaseTransform):
             # img shape is W*H*C
             # change it to C, W, H
             img = img.permute(2, 0, 1)
-            packed_results['imgs'] = img
+            # packed_results['imgs'] = img
+            packed_results['inputs'] = img
         else:
             raise ValueError("img is not in the results")
         
@@ -47,6 +48,14 @@ class PackClsInputs(BaseTransform):
             packed_results['labels'] = results['img_label']
         else:
             raise ValueError("img_label is not in the results")
+
+        meta_info = {}
+        for meta_key in self.meta_keys:
+            if meta_key in results:
+                meta_info[meta_key] = results[meta_key]
+            else:
+                warnings.warn(f"{meta_key} is not in the results")
+        packed_results['data_samples'] = meta_info
 
         return packed_results
 

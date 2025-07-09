@@ -108,7 +108,8 @@ EVALUATOR = Registry(
 TASK_UTILS = Registry('task util', parent=MMENGINE_TASK_UTILS)
 
 # manage visualizer
-VISUALIZERS = Registry('visualizer', parent=MMENGINE_VISUALIZERS)
+VISUALIZERS = Registry('visualizer', parent=MMENGINE_VISUALIZERS,
+                       locations=['mmengine_custom.engine'])
 # manage visualizer backend
 VISBACKENDS = Registry('vis_backend', parent=MMENGINE_VISBACKENDS)
 

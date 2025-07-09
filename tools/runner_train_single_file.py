@@ -14,7 +14,7 @@ import sys
 from mmengine.registry import DefaultScope
 sys.path.append('/hdd/side_projects/mmlab_tutorials/')
 # from mmengine_custom.datasets.datasets import Fruits360Dataset
-
+from mmengine_custom.models.model import SimpleConvModel as CustomModel
 
 
 # @DATASETS.register_module()
@@ -143,7 +143,7 @@ pipeline = [
             dict(type='Resize', scale=(128, 128), keep_ratio=False),
             dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             dict(type='ToTensor', keys=['img']),
-            dict(type='PackClsInputs'),
+            dict(type='CustomPackClsInputs'),
         ]
 
 meta_file_path = "/hdd/side_projects/mmlab_tutorials/data/class_names_to_indices.json"
@@ -175,7 +175,7 @@ val_dataloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 runner = Runner(
     # the model used for training and validation.
     # Needs to meet specific interface requirements
-    model=SimpleConvModel(num_classes=num_classes),
+    model= CustomModel(num_classes=num_classes),
     # working directory which saves training logs and weight files
     work_dir='./work_dir',
     # train dataloader needs to meet the PyTorch data loader protocol

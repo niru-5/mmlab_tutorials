@@ -54,7 +54,7 @@ class Fruits360Dataset(BaseDataset):
         return data_list
     
 
-
+@DATASETS.register_module()
 class Fruits360DatasetTorch(Dataset):
     def __init__(self, meta_file, ann_file, transform=None):
         """

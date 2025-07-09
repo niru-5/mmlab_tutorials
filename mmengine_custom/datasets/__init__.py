@@ -1,4 +1,4 @@
 from .datasets import Fruits360Dataset, Fruits360DatasetTorch
-from .transforms import PackClsInputs
+from .transforms import CustomPackClsInputs
 
-__all__ = ['Fruits360Dataset', 'Fruits360DatasetTorch', 'PackClsInputs']
+__all__ = ['Fruits360Dataset', 'Fruits360DatasetTorch', 'CustomPackClsInputs']
