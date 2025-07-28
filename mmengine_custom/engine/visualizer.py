@@ -26,32 +26,20 @@ class CustomVisualizer(Visualizer):
         # Take the top 5 max values in predictions and use them to get the class labels
         top5_values, top5_indices = torch.topk(pred_scores, 5)
         
-        # Get class names from dataset metadata if available
-        if hasattr(self, 'dataset_meta') and self.dataset_meta is not None:
-            classes = self.dataset_meta.get('classes', [])
-        else:
-            # Fallback to generic class names
-            classes = [f'Class_{i}' for i in range(len(pred_scores))]
+        # Format probabilities to 2 decimal places
+        top5_probs = [f"{val:.2%}" for val in torch.softmax(top5_values, dim=0)]
         
-        # Get ground truth label
-        gt_label = classes[gt_label_idx] if gt_label_idx < len(classes) else f'Class_{gt_label_idx}'
-        
-        # Get top 5 prediction labels
-        pred_labels = []
-        for idx in top5_indices:
-            if idx < len(classes):
-                pred_labels.append(classes[idx])
-            else:
-                pred_labels.append(f'Class_{idx}')
+        # Combine indices with their probabilities
+        pred_info = [f"{idx}({prob})" for idx, prob in zip(top5_indices.tolist(), top5_probs)]
         
         # Format the text
-        text = f"GT: {gt_label} | Top 5: [{', '.join(pred_labels)}]"
+        text = f"GT: {gt_label_idx} | Top 5: [{', '.join(pred_info)}]"
         
         # add the text to the image
         self.draw_texts(
             texts=[text],
             positions=np.array([[10, 30]]),  # Position at top-left
-            font_sizes=12,
+            font_sizes=6,
             colors='white',
             bboxes=[dict(boxstyle='round,pad=0.5', facecolor='black', alpha=0.7)]
         )
