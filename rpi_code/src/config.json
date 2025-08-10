@@ -1,0 +1,11 @@
+{
+    "image_folder":"/home/rpi5/Documents/picamera_data",
+    "image_width": 1024,
+    "image_height": 1024,
+    "time_to_capture": 10,
+    "mode_selected": 7,
+    "SSD_image_folder": "/media/rpi5/T7/bird_data_collection/",
+    "number_of_images": 1000,
+    "number_of_imgs_per_second": 3
+
+}

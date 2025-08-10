@@ -35,7 +35,8 @@ RUN apt-get install -y \
     ssh \
     telnet \
     ncftp \
-    nano
+    nano \
+    screen
 
 RUN apt-get install -y \
     python3 \
